@@ -149,7 +149,21 @@ Read `index-draft.json` and plan parallel analysis:
 
 ### Step 6: Execute Parallel Analysis
 
-Spawn Task agents with `run_in_background: true`:
+Spawn Task agents with `run_in_background: true`.
+
+**Why use Task agents?**
+- **Context isolation**: All file reads, grep results, and intermediate processing happen in sub-agent sessions
+- **Main session stays clean**: Only the final chunk JSON files are written - main session never sees the raw file contents
+- **Scalability**: Can analyze 100k+ line codebases without overwhelming main context
+
+**Model Selection**:
+| Model | Use Case |
+|-------|----------|
+| `haiku` | Recommended for indexing - file extraction is straightforward |
+| `sonnet` | If summaries need more nuance |
+| `opus` | Only for complex architectural analysis |
+
+Use `model: "haiku"` for cost savings. The main benefit is context isolation, not model choice.
 
 **Task agent prompt template:**
 ```
